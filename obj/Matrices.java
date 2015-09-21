@@ -17,6 +17,14 @@ public class Matrices {
 		}
 	}
 	
+	/**
+	 * Clears a matrix (fill it with zeroes)
+	 * @param m Matrix to be cleared
+	 */
+	public static void clear(Matrix m) {
+		fill(m, 0);
+	}
+	
 	
 	
 }

@@ -90,12 +90,12 @@ public class Matrix {
 	 * Trace is the sum of the main diagonal
 	 * @return trace of matrix
 	 */
-	public int trace() {
+	public double trace() {
 		if (!isSquare()) {
 			System.err.println("ERR: Matrix is not a square");
-			return Integer.MIN_VALUE;
+			return Double.MIN_VALUE;
 		}
-		int trace = 0;
+		double trace = 0;
 		for (int i=0; i<rows; i++) {
 			trace += matrix[i][i];
 		}
@@ -218,6 +218,35 @@ public class Matrix {
 	}
 	
 	/**
+	 * Get determinant of matrix
+	 * @return Double type determinant
+	 */
+	public double det() {
+		if (rows != columns) {
+			System.err.println("ERR: Non-square matrix.");
+			return Double.MIN_VALUE;
+		}
+		return arrayDet(matrix);
+	}
+	
+	/**
+	 * Helper function; returns determinant of array
+	 * @param arr double[][] array
+	 * @return Double type determinant
+	 */
+	private double arrayDet(double[][] arr) {
+		if (arr.length == 2 && arr[0].length == 2) {
+			return arr[0][0]*arr[1][1] - arr[1][0]*arr[0][1];
+		} else {
+			double det = 0;
+			for (int j=0; j<arr[0].length; j++) {
+				det += arr[0][j]*arrayDet(minorArray(arr, 0, j));
+			}
+			return det;
+		}
+	} 
+	
+	/**
 	 * Set an entry val at mth row, nth column
 	 * @param m Index of row (starts at 1)
 	 * @param n Index of column (starts at 1)
@@ -243,6 +272,51 @@ public class Matrix {
 			}
 		}
 		return res;
+	}
+	
+	/**
+	 * Get a sub-matrix by removing a row and a column
+	 * @param m Row to remove (starts at 1)
+	 * @param n Column to remove (starts at 1)
+	 * @return New Matrix object result
+	 */
+	public Matrix minor(int m, int n) {
+		if (m <= 0 || n <= 0 || m > rows || n > columns) {
+			System.err.println("ERR: Invalid position.");
+			return null;
+		}
+		Matrix res = new Matrix(rows-1, columns-1);
+		res.matrix = minorArray(matrix, m-1, n-1);
+		return res;
+	}
+	
+	/**
+	 * Helper function for minoring a double[][] array
+	 * @param arr double[][] array
+	 * @param m Row to remove
+	 * @param n Column to remove
+	 * @return
+	 */
+	private double[][] minorArray(double[][] arr, int m, int n) {
+		int rows = arr.length;
+		int columns = arr[0].length;
+		double[][] resArray = new double[rows-1][columns-1];
+		for (int i=0; i<rows; i++) {
+			for (int j=0; j<columns; j++) {
+				if (i<m && j<n) {
+					resArray[i][j] = arr[i][j];
+				} else if (i<m && j>n) {
+					resArray[i][j-1] = arr[i][j];
+				} else if (i>m && j<n) {
+					resArray[i-1][j] = arr[i][j];
+				} else if (i>m && j>n) {
+					resArray[i-1][j-1] = arr[i][j];
+				} else {
+					//i==m-1 and j==n-1 -> removed row/column
+				}
+			}
+		}
+		return resArray;
 	}
 	
 	/**
@@ -349,6 +423,16 @@ public class Matrix {
 		return columns;
 	}
 	
+	/**
+	 * Get an entry
+	 * @param m Row (starts at 1)
+	 * @param n Column (starts at 1)
+	 * @return Double type value
+	 */
+	public double get(int m, int n) {
+		return matrix[m-1][n-1];
+	}
+	
 	public static void main(String[] args) {
 		double[][] array = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}, {10, 11, 12}};
 		Matrix m = new Matrix(array);
@@ -375,8 +459,17 @@ public class Matrix {
 		
 		System.out.println("toString() Representation:");
 		System.out.println(m.toString());
+		System.out.println();
 		
+		Matrix subM = m.minor(2, 2);
+		System.out.println("Minor(2, 2):");
+		subM.print();
+		System.out.println();
 		
-		
+		double[][] squareArr = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
+		Matrix squareMat = new Matrix(squareArr);
+		System.out.println("Determinant of " + squareMat.toString());
+		System.out.println(squareMat.det());
+		System.out.println();
 	}
 }
