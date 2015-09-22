@@ -86,6 +86,34 @@ public class Matrix {
 	}
 	
 	/**
+	 * Checks if matrix is invertible
+	 * @return true if matrix is invertible
+	 */
+	public boolean invertible() {
+		return rows == columns && det() != 0;
+	}
+	
+	/**
+	 * Checks equality between two matrices
+	 * @return true if all entries are equal
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		Matrix m = (Matrix) obj;
+		if (rows != m.rows || columns != m.columns) {
+			return false;
+		}
+		for (int i=0; i<rows; i++) {
+			for (int j=0; j<columns; j++) {
+				if (matrix[i][j] != m.matrix[i][j]) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+
+	/**
 	 * Calculates the trace of the matrix
 	 * Trace is the sum of the main diagonal
 	 * @return trace of matrix
@@ -102,6 +130,20 @@ public class Matrix {
 		return trace;
 	}
 	
+	/**
+	 * Transpose the matrix
+	 * @return New Matrix object result
+	 */
+	public Matrix transpose() {
+		Matrix res = new Matrix(columns, rows);
+		for (int i=0; i<rows; i++) {
+			for (int j=0; j<columns; j++) {
+				res.matrix[j][i] = matrix[i][j];
+			}
+		}
+		return res;
+	}
+
 	/**
 	 * Adds two matrices with the same dimensions
 	 * @param m Matrix to add
@@ -142,6 +184,106 @@ public class Matrix {
 	}
 	
 	/**
+	 * Multiply this matrix by a constant
+	 * @param c Constant to multiply
+	 * @return New Matrix object result
+	 */
+	public Matrix multiply(double c) {
+		if (c == 0) {
+			return new Matrix(rows, columns);
+		}
+		Matrix res = new Matrix(rows, columns);
+		for (int i=0; i<rows; i++) {
+			for (int j=0; j<columns; j++) {
+				res.matrix[i][j] = matrix[i][j]*c;
+			}
+		}
+		return res;
+	}
+
+	/**
+	 * Get a sub-matrix by removing a row and a column
+	 * @param m Row to remove (starts at 1)
+	 * @param n Column to remove (starts at 1)
+	 * @return New Matrix object result
+	 */
+	public Matrix minor(int m, int n) {
+		if (m <= 0 || n <= 0 || m > rows || n > columns) {
+			System.err.println("ERR: Invalid position.");
+			return null;
+		}
+		Matrix res = new Matrix(rows-1, columns-1);
+		res.matrix = minorArray(matrix, m-1, n-1);
+		return res;
+	}
+	
+	/**
+	 * Get the inverse of this matrix
+	 * @return Inverse matrix A^-1
+	 */
+	public Matrix inverse() {
+		if (rows != columns) {
+			System.err.println("ERR: Non-square matrix.");
+			return null;
+		}
+		Matrix res = new Matrix(rows, columns);
+		//Adjugate
+		for (int i=0; i<rows; i++) {
+			for (int j=0; j<columns; j++) {
+				res.matrix[i][j] = minor(i+1, j+1).det()*(Math.pow(-1, i+j));
+			}
+		}
+		res = res.transpose();
+		
+		//Inverse = (1/det)(adj)
+		res = res.multiply(1/det());
+
+		return res;
+	}
+
+	/** Clone this matrix into a new object
+	 * @return New Matrix object result
+	 */
+	public Matrix clone() {
+		Matrix res = new Matrix(rows, columns);
+		for (int i=0; i<rows; i++) {
+			for (int j=0; j<columns; j++) {
+				res.matrix[i][j] = matrix[i][j];
+			}
+		}
+		return res;
+	}
+
+	/**
+	 * Get determinant of matrix
+	 * @return Double type determinant
+	 */
+	public double det() {
+		if (rows != columns) {
+			System.err.println("ERR: Non-square matrix.");
+			return Double.MIN_VALUE;
+		}
+		return arrayDet(matrix);
+	}
+
+	/**
+	 * Helper function; returns determinant of array
+	 * @param arr double[][] array
+	 * @return Double type determinant
+	 */
+	private double arrayDet(double[][] arr) {
+		if (arr.length == 2 && arr[0].length == 2) {
+			return arr[0][0]*arr[1][1] - arr[1][0]*arr[0][1];
+		} else {
+			double det = 0;
+			for (int j=0; j<arr[0].length; j++) {
+				det += arr[0][j]*arrayDet(minorArray(arr, 0, j))*(Math.pow(-1, j));
+			}
+			return det;
+		}
+	}
+
+	/**
 	 * Turn a matrix column into a flat array
 	 * @param m Matrix
 	 * @param columnIndex Index of column
@@ -156,10 +298,49 @@ public class Matrix {
 	}
 	
 	/**
+	 * Helper function for minoring a double[][] array
+	 * @param arr double[][] array
+	 * @param m Row to remove
+	 * @param n Column to remove
+	 * @return double[][] array
+	 */
+	private double[][] minorArray(double[][] arr, int m, int n) {
+		int rows = arr.length;
+		int columns = arr[0].length;
+		double[][] resArray = new double[rows-1][columns-1];
+		for (int i=0; i<rows; i++) {
+			for (int j=0; j<columns; j++) {
+				if (i<m && j<n) {
+					resArray[i][j] = arr[i][j];
+				} else if (i<m && j>n) {
+					resArray[i][j-1] = arr[i][j];
+				} else if (i>m && j<n) {
+					resArray[i-1][j] = arr[i][j];
+				} else if (i>m && j>n) {
+					resArray[i-1][j-1] = arr[i][j];
+				} else {
+					//i==m-1 and j==n-1 -> removed row/column
+				}
+			}
+		}
+		return resArray;
+	}
+
+	/**
+	 * Get an entry
+	 * @param m Row (starts at 1)
+	 * @param n Column (starts at 1)
+	 * @return Double type value
+	 */
+	public double get(int m, int n) {
+		return matrix[m-1][n-1];
+	}
+
+	/**
 	 * Sum the products of corresponding entries in two arrays
 	 * @param a First array
 	 * @param b Second array
-	 * @return Sum of products (dot product)
+	 * @return Sum of products of corresponding arrays (dot product)
 	 */
 	private int dotProduct(double[] a, double[] b) {
 		int prod = 0;
@@ -170,23 +351,61 @@ public class Matrix {
 	}
 	
 	/**
-	 * Multiply this matrix by a constant
-	 * @param c Constant to multiply
-	 * @return New Matrix object result
+	 * Getter method for number of rows
+	 * @return number of rows in matrix
 	 */
-	public Matrix multiply(int c) {
-		if (c == 0) {
-			return new Matrix(rows, columns);
-		}
-		Matrix res = new Matrix(rows, columns);
+	public int row() {
+		return rows;
+	}
+
+	/**
+	 * Getter method for number of columns
+	 * @return number of columns in matrix
+	 */
+	public int column() {
+		return columns;
+	}
+
+	/**
+	 * Returns hash code for matrix
+	 * @return int hash code
+	 */
+	@Override
+	public int hashCode() {
+		int hash = rows * columns;
 		for (int i=0; i<rows; i++) {
 			for (int j=0; j<columns; j++) {
-				res.matrix[i][j] = matrix[i][j]*c;
+				hash += 13 * ((matrix[i][j] * rows) / columns);
 			}
 		}
-		return res;
+		return hash;
 	}
-	
+
+	/**
+	 * String representation of the matrix
+	 */
+	@Override
+	public String toString() {
+		String rep = "[";
+		for (int i=0; i<rows; i++) {
+			for (int j=0; j<columns; j++) {
+				if (j==0 && columns == 1) {
+					rep += "[ " + matrix[i][j] + " ]";
+				} else if (j==0) {
+					rep += "[ " + matrix[i][j] + ", ";
+				} else if (j==columns-1 && i==rows-1) {
+					rep += matrix[i][j] + " ] ";
+				} else if (j==columns-1) {
+					rep += matrix[i][j] + " ], ";
+				} else {
+					rep += matrix[i][j] + ", ";
+				}
+			}
+		}
+		rep += "]";
+		return rep;
+	}
+
 	/**
 	 * Scale a row in the matrix by c
 	 * @param row Row to scale
@@ -218,35 +437,6 @@ public class Matrix {
 	}
 	
 	/**
-	 * Get determinant of matrix
-	 * @return Double type determinant
-	 */
-	public double det() {
-		if (rows != columns) {
-			System.err.println("ERR: Non-square matrix.");
-			return Double.MIN_VALUE;
-		}
-		return arrayDet(matrix);
-	}
-	
-	/**
-	 * Helper function; returns determinant of array
-	 * @param arr double[][] array
-	 * @return Double type determinant
-	 */
-	private double arrayDet(double[][] arr) {
-		if (arr.length == 2 && arr[0].length == 2) {
-			return arr[0][0]*arr[1][1] - arr[1][0]*arr[0][1];
-		} else {
-			double det = 0;
-			for (int j=0; j<arr[0].length; j++) {
-				det += arr[0][j]*arrayDet(minorArray(arr, 0, j));
-			}
-			return det;
-		}
-	} 
-	
-	/**
 	 * Set an entry val at mth row, nth column
 	 * @param m Index of row (starts at 1)
 	 * @param n Index of column (starts at 1)
@@ -261,176 +451,18 @@ public class Matrix {
 	}
 	
 	/**
-	 * Transpose the matrix
-	 * @return New Matrix object result
-	 */
-	public Matrix transpose() {
-		Matrix res = new Matrix(columns, rows);
-		for (int i=0; i<rows; i++) {
-			for (int j=0; j<columns; j++) {
-				res.matrix[j][i] = matrix[i][j];
-			}
-		}
-		return res;
-	}
-	
-	/**
-	 * Get a sub-matrix by removing a row and a column
-	 * @param m Row to remove (starts at 1)
-	 * @param n Column to remove (starts at 1)
-	 * @return New Matrix object result
-	 */
-	public Matrix minor(int m, int n) {
-		if (m <= 0 || n <= 0 || m > rows || n > columns) {
-			System.err.println("ERR: Invalid position.");
-			return null;
-		}
-		Matrix res = new Matrix(rows-1, columns-1);
-		res.matrix = minorArray(matrix, m-1, n-1);
-		return res;
-	}
-	
-	/**
-	 * Helper function for minoring a double[][] array
-	 * @param arr double[][] array
-	 * @param m Row to remove
-	 * @param n Column to remove
-	 * @return
-	 */
-	private double[][] minorArray(double[][] arr, int m, int n) {
-		int rows = arr.length;
-		int columns = arr[0].length;
-		double[][] resArray = new double[rows-1][columns-1];
-		for (int i=0; i<rows; i++) {
-			for (int j=0; j<columns; j++) {
-				if (i<m && j<n) {
-					resArray[i][j] = arr[i][j];
-				} else if (i<m && j>n) {
-					resArray[i][j-1] = arr[i][j];
-				} else if (i>m && j<n) {
-					resArray[i-1][j] = arr[i][j];
-				} else if (i>m && j>n) {
-					resArray[i-1][j-1] = arr[i][j];
-				} else {
-					//i==m-1 and j==n-1 -> removed row/column
-				}
-			}
-		}
-		return resArray;
-	}
-	
-	/**
-	 * Checks equality between two matrices
-	 * @return true if all entries are equal
-	 */
-	@Override
-	public boolean equals(Object obj) {
-		Matrix m = (Matrix) obj;
-		if (rows != m.rows || columns != m.columns) {
-			return false;
-		}
-		for (int i=0; i<rows; i++) {
-			for (int j=0; j<columns; j++) {
-				if (matrix[i][j] != m.matrix[i][j]) {
-					return false;
-				}
-			}
-		}
-		return true;
-	}
-	
-	/**
 	 * Print matrix to System.out
 	 */
 	public void print() {
 		for (int i=0; i<rows; i++) {
 			for (int j=0; j<columns; j++) {
 				if (j==columns-1) {
-					System.out.println(matrix[i][j]);
+					System.out.printf("%.2f\n", matrix[i][j]);
 				} else {
-					System.out.print(matrix[i][j] + "  ");
+					System.out.printf("%.2f  ", matrix[i][j]);
 				}
 			}
 		}
-	}
-	
-	/**
-	 * String representation of the matrix
-	 */
-	@Override
-	public String toString() {
-		String rep = "[";
-		for (int i=0; i<rows; i++) {
-			for (int j=0; j<columns; j++) {
-				if (j==0 && columns == 1) {
-					rep += "[ " + matrix[i][j] + " ]";
-				} else if (j==0) {
-					rep += "[ " + matrix[i][j] + ", ";
-				} else if (j==columns-1 && i==rows-1) {
-					rep += matrix[i][j] + " ] ";
-				} else if (j==columns-1) {
-					rep += matrix[i][j] + " ], ";
-				} else {
-					rep += matrix[i][j] + ", ";
-				}
-			}
-		}
-		rep += "]";
-		return rep;
-	}
-	
-	/** Clone this matrix into a new object
-	 * @return New Matrix object result
-	 */
-	public Matrix clone() {
-		Matrix res = new Matrix(rows, columns);
-		for (int i=0; i<rows; i++) {
-			for (int j=0; j<columns; j++) {
-				res.matrix[i][j] = matrix[i][j];
-			}
-		}
-		return res;
-	}
-	
-	/**
-	 * Returns hash code for matrix
-	 * @return int hash code
-	 */
-	@Override
-	public int hashCode() {
-		int hash = rows * columns;
-		for (int i=0; i<rows; i++) {
-			for (int j=0; j<columns; j++) {
-				hash += 13 * ((matrix[i][j] * rows) / columns);
-			}
-		}
-		return hash;
-	}
-	
-	/**
-	 * Getter method for row
-	 * @return number of rows in matrix
-	 */
-	public int row() {
-		return rows;
-	}
-	
-	/**
-	 * Getter method for column
-	 * @return number of columns in matrix
-	 */
-	public int column() {
-		return columns;
-	}
-	
-	/**
-	 * Get an entry
-	 * @param m Row (starts at 1)
-	 * @param n Column (starts at 1)
-	 * @return Double type value
-	 */
-	public double get(int m, int n) {
-		return matrix[m-1][n-1];
 	}
 	
 	public static void main(String[] args) {
@@ -470,6 +502,13 @@ public class Matrix {
 		Matrix squareMat = new Matrix(squareArr);
 		System.out.println("Determinant of " + squareMat.toString());
 		System.out.println(squareMat.det());
+		System.out.println();
+		
+		double[][] squareArr2 = {{7, 2, 1}, {0, 3, -1}, {-3, 4, -2}};
+		Matrix squareMat2 = new Matrix(squareArr2);
+		Matrix inverse = squareMat2.inverse();
+		System.out.println("Inverse of " + squareMat2.toString());
+		inverse.print();
 		System.out.println();
 	}
 }
