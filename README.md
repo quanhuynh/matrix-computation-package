@@ -27,6 +27,12 @@ Linear algebra package made by Java for Java. It includes elementary operations 
 &nbsp;&nbsp;Returns new Matrix that is result of scaling self Matrix by a constant c
 ######double trace()
 &nbsp;&nbsp;Returns the trace (sum of diagonal entries) of the Matrix
+######void swapRow(int m1, int m2)
+&nbsp;&nbsp;Swap two rows m1 and m2
+######void scaleRow(int m, double c)
+&nbsp;&nbsp;Scale row m by constant c
+######void scaleColumn(int n, double c)
+&nbsp;&nbsp;Scale column n by constant c
 #### More Operations
 ######Matrix transpose()
 &nbsp;&nbsp;Returns new Matrix that is result of transposing self Matrix
@@ -39,3 +45,24 @@ Linear algebra package made by Java for Java. It includes elementary operations 
 ######Matrix inverse()
 &nbsp;&nbsp;Returns new Matrix that is the inverse of self Matrix
 #### Miscellaneous
+######Matrix random(int m, int n)
+&nbsp;&nbsp;Returns an mxn matrix with random entries
+######Matrix clone()
+&nbsp;&nbsp;Clone the matrix into a new Matrix object
+######double get(int m, int n)
+&nbsp;&nbsp;Get an entry at row m, column n
+######void setEntry(int m, int n, double c)
+&nbsp;&nbsp;Set entry at (m, n) to be c
+######int row()
+&nbsp;&nbsp;Get number of rows
+######int column()
+&nbsp;&nbsp;Get number of columns
+######int hashCode()
+&nbsp;&nbsp;Returns hash code of Matrix object
+######String toString()
+&nbsp;&nbsp;Returns String representation of Matrix object
+######void print()
+&nbsp;&nbsp;Print Matrix to System.out
+
+
+

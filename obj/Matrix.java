@@ -78,6 +78,22 @@ public class Matrix {
 	}
 	
 	/**
+	 * Returns a random matrix of m rows and n columns
+	 * @param m Row
+	 * @param n Column
+	 * @return Matrix object with random entries
+	 */
+	public static Matrix random(int m, int n) {
+		Matrix res = new Matrix(m, n);
+		for (int i=0; i<res.rows; i++) {
+			for (int j=0; j<res.columns; j++) {
+				res.matrix[i][j] = Math.random()*50 + 1;
+			}
+		}
+		return res;
+	}
+	
+	/**
 	 * Checks if matrix is a n x n matrix
 	 * @return true if matrix is square
 	 */
@@ -253,6 +269,36 @@ public class Matrix {
 		}
 		return res;
 	}
+	
+	public Matrix echelonForm() {
+		Matrix res = new Matrix(rows, columns);
+		
+		return res;
+	}
+	
+	/**
+	 * Checks that an entry is a leading entry in its row
+	 * @param arr Array of entries
+	 * @param m Row
+	 * @param n Column
+	 * @return true if the entry at (m, n) is a leading entry
+	 */
+	private boolean isLeading(double[][] arr, int m, int n) {
+		int rows = arr.length;
+		//All zero entries underneath
+		for (int i=m+1; i<rows; i++) {
+			if (arr[i][n] != 0) {
+				return false;
+			}
+		}
+		//All zero entries to the left 
+		for (int j=n-1; j>= 0; j--) {
+			if (arr[m][j] != 0) {
+				return false;
+			}
+		}
+		return true;
+	}
 
 	/**
 	 * Get determinant of matrix
@@ -411,7 +457,7 @@ public class Matrix {
 	 * @param row Row to scale
 	 * @param c Scaling factor
 	 */
-	public void scaleRow(int row, int c) {
+	public void scaleRow(int row, double c) {
 		if (row <= 0 || row > rows) {
 			System.err.println("ERR: Invalid row.");
 			return;
@@ -426,7 +472,7 @@ public class Matrix {
 	 * @param column Column to scale
 	 * @param c Scaling factor
 	 */
-	public void scaleColumn(int column, int c) {
+	public void scaleColumn(int column, double c) {
 		if (column <= 0 || column > columns) {
 			System.err.println("ERR: Invalid column.");
 			return;
@@ -448,6 +494,17 @@ public class Matrix {
 			return;
 		}
 		matrix[m-1][n-1] = val;
+	}
+	
+	/**
+	 * Swaps two rows of the matrix
+	 * @param m1 First row
+	 * @param m2 Second row
+	 */
+	public void swapRow(int m1, int m2) {
+		double[] t = matrix[m1];
+		matrix[m1] = matrix[m2];
+		matrix[m2] = t;
 	}
 	
 	/**
