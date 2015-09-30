@@ -14,7 +14,7 @@ public class Matrix {
 	 */
 	public Matrix(double[][] array) {
 		if (array == null) {
-			System.err.println("ERR: Null array.");
+			System.err.println("ERR: Null array. Cannot construct.");
 			return;
 		}
 		rows = array.length;
@@ -33,7 +33,7 @@ public class Matrix {
 	 */
 	public Matrix(double[] array) {
 		if (array == null) {
-			System.err.println("ERR: Null array.");
+			System.err.println("ERR: Null array. Cannot construct.");
 			return;
 		}
 		rows = 1;
@@ -51,7 +51,7 @@ public class Matrix {
 	 */
 	public Matrix(int m, int n) {
 		if (m < 0 || n < 0) {
-			System.err.println("ERR: Invalid dimensions.");
+			System.err.println("ERR: Invalid dimensions. Cannot construct.");
 			return;
 		}
 		rows = m;
@@ -67,7 +67,7 @@ public class Matrix {
 	 */
 	public Matrix(int m, int n, double val) {
 		if (m < 0 || n < 0) {
-			System.err.println("ERR: Invalid dimensions.");
+			System.err.println("ERR: Invalid dimensions. Cannot construct.");
 		}
 		rows = m;
 		columns = n;
@@ -167,7 +167,7 @@ public class Matrix {
 	 */
 	public Matrix add(Matrix m) {
 		if (columns != m.columns || rows != m.rows) {
-			System.err.println("ERR: Cannot add these matrices.");
+			System.err.println("ERR: Cannot add matrices.");
 			return null;
 		}
 		Matrix res = new Matrix(rows, columns);
@@ -187,7 +187,7 @@ public class Matrix {
 	 */
 	public Matrix multiply(Matrix m) {
 		if (columns != m.rows) {
-			System.err.println("ERR: Matrices cannot be multiplied.");
+			System.err.println("ERR: Cannot multiply matrices.");
 			return null;
 		}
 		Matrix res = new Matrix(rows, m.columns);
@@ -225,7 +225,7 @@ public class Matrix {
 	 */
 	public Matrix minor(int m, int n) {
 		if (m <= 0 || n <= 0 || m > rows || n > columns) {
-			System.err.println("ERR: Invalid position.");
+			System.err.println("ERR: Invalid position. Cannot get minor.");
 			return null;
 		}
 		Matrix res = new Matrix(rows-1, columns-1);
@@ -239,7 +239,7 @@ public class Matrix {
 	 */
 	public Matrix inverse() {
 		if (rows != columns) {
-			System.err.println("ERR: Non-square matrix.");
+			System.err.println("ERR: Non-square matrix. Cannot get inverse.");
 			return null;
 		}
 		Matrix res = new Matrix(rows, columns);
@@ -270,7 +270,6 @@ public class Matrix {
 		return res;
 	}
 
-	//Incomplete
 	public void echelonForm() {
 		int d; //diagonal boundary
 		if (rows > columns) {
@@ -322,35 +321,13 @@ public class Matrix {
 		return null;
 	}
 
-
-	private boolean isLeadingInRow(double[][] arr, int m, int n) {
-		//All zero entries to the left
-		for (int j=n-1; j> 0; j--) {
-			if (arr[m][j] != 0) {
-				return false;
-			}
-		}
-		return true;
-	}
-
-	private boolean isLeadingInColumn(double[][] arr, int m, int n) {
-		int rows = arr.length;
-		//All zero entries underneath
-		for (int i=m+1; i<rows; i++) {
-			if (arr[i][n] != 0) {
-				return false;
-			}
-		}
-		return true;
-	}
-
 	/**
 	 * Get determinant of matrix
 	 * @return Double type determinant
 	 */
 	public double det() {
 		if (rows != columns) {
-			System.err.println("ERR: Non-square matrix.");
+			System.err.println("ERR: Non-square matrix. Cannot get determinant.");
 			return Double.MIN_VALUE;
 		}
 		return arrayDet(matrix);
@@ -423,6 +400,9 @@ public class Matrix {
 	 * @return Double type value
 	 */
 	public double get(int m, int n) {
+		if (m < 0 || n < 0 || m > rows || n > columns) {
+			System.err.println("ERR: Invalid dimensions. Cannot get entry.");
+		}
 		return matrix[m-1][n-1];
 	}
 
@@ -503,7 +483,7 @@ public class Matrix {
 	 */
 	public void scaleRow(int row, double c) {
 		if (row <= 0 || row > rows) {
-			System.err.println("ERR: Invalid row.");
+			System.err.println("ERR: Invalid row. Cannot scale.");
 			return;
 		}
 		for (int j=0; j<columns; j++) {
@@ -518,7 +498,7 @@ public class Matrix {
 	 */
 	public void scaleColumn(int column, double c) {
 		if (column <= 0 || column > columns) {
-			System.err.println("ERR: Invalid column.");
+			System.err.println("ERR: Invalid column. Cannot scale.");
 			return;
 		}
 		for (int i=0; i<rows; i++) {
@@ -533,7 +513,7 @@ public class Matrix {
 	 * @param val Value to set
 	 */
 	public void setEntry(int m, int n, double val) {
-		if (m <= 0 || n <= 0 || m > rows || n > columns) {
+		if (m < 0 || n < 0 || m > rows || n > columns) {
 			System.err.println("ERR: Invalid location.");
 			return;
 		}
@@ -562,7 +542,7 @@ public class Matrix {
 	 */
 	public void scaleAddRows(int m1, int m2, double c) {
 		if (m1 == m2) {
-			System.err.println("ERR: Invalid Operation. Cannot scale-add.");
+			System.err.println("ERR: Rows are the same. Cannot scale-add.");
 			return;
 		} else if (m1 <= 0 || m2 <= 0) {
 			System.err.println("ERR: Invalid row dimension. Cannot scale-add.");
