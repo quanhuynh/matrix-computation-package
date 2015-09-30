@@ -4,10 +4,10 @@ package obj;
 import java.util.Arrays;
 
 public class Matrix {
-	
+
 	private double[][] matrix;
 	private int columns, rows;
-	
+
 	/**
 	 * Constructs a matrix based on an input array
 	 * @param array Array to copy
@@ -26,7 +26,7 @@ public class Matrix {
 			}
 		}
 	}
-	
+
 	/**
 	 * Creates a one dimensional matrix (first row) from a one dimensional array
 	 * @param array Array to copy
@@ -43,7 +43,7 @@ public class Matrix {
 			matrix[0][j] = array[j];
 		}
 	}
-	
+
 	/**
 	 * Constructs an m x n matrix of zeroes
 	 * @param m rows
@@ -58,7 +58,7 @@ public class Matrix {
 		columns = n;
 		matrix = new double[rows][columns];
 	}
-	
+
 	/**
 	 * Constructs an m x n matrix of value val
 	 * @param m Rows
@@ -76,7 +76,7 @@ public class Matrix {
 			Arrays.fill(matrix[i], val);
 		}
 	}
-	
+
 	/**
 	 * Returns a random matrix of m rows and n columns
 	 * @param m Row
@@ -92,7 +92,7 @@ public class Matrix {
 		}
 		return res;
 	}
-	
+
 	/**
 	 * Checks if matrix is a n x n matrix
 	 * @return true if matrix is square
@@ -100,7 +100,7 @@ public class Matrix {
 	public boolean isSquare() {
 		return columns == rows;
 	}
-	
+
 	/**
 	 * Checks if matrix is invertible
 	 * @return true if matrix is invertible
@@ -108,7 +108,7 @@ public class Matrix {
 	public boolean invertible() {
 		return rows == columns && det() != 0;
 	}
-	
+
 	/**
 	 * Checks equality between two matrices
 	 * @return true if all entries are equal
@@ -145,7 +145,7 @@ public class Matrix {
 		}
 		return trace;
 	}
-	
+
 	/**
 	 * Transpose the matrix
 	 * @return New Matrix object result
@@ -177,9 +177,9 @@ public class Matrix {
 			}
 		}
 		return res;
-		
+
 	}
-	
+
 	/**
 	 * Multiply two matrices
 	 * @param m matrix to multiply with self
@@ -198,7 +198,7 @@ public class Matrix {
 		}
 		return res;
 	}
-	
+
 	/**
 	 * Multiply this matrix by a constant
 	 * @param c Constant to multiply
@@ -232,7 +232,7 @@ public class Matrix {
 		res.matrix = minorArray(matrix, m-1, n-1);
 		return res;
 	}
-	
+
 	/**
 	 * Get the inverse of this matrix
 	 * @return Inverse matrix A^-1
@@ -250,7 +250,7 @@ public class Matrix {
 			}
 		}
 		res = res.transpose();
-		
+
 		//Inverse = (1/det)(adj)
 		res = res.multiply(1/det());
 
@@ -269,31 +269,75 @@ public class Matrix {
 		}
 		return res;
 	}
-	
-	public Matrix echelonForm() {
-		Matrix res = new Matrix(rows, columns);
-		
-		return res;
+
+	//Incomplete
+	public void echelonForm() {
+		int d; //diagonal boundary
+		if (rows > columns) {
+			d = columns;
+		} else {
+			d = rows;
+		}
+		for (int i=0; i<d; i++) {
+			//find pivot row-column pair for submatrix(i, i) where i starts at 0
+			RowColumnPair pivotRC = findPivotPos(i);
+
+			if (pivotRC.row != i+1) {
+				//if pivot row is not first row in submatrix, swap
+				swapRows(pivotRC.row, i+1);
+			}
+			
+			//Divide across row for leading entry to be one
+			double pivotEntry = matrix[i][i];
+			for (int x=i; x<columns; x++) {
+				matrix[i][x] /= pivotEntry;
+			}
+			
+			//Create zeroes underneath pivot row
+			for (int y=i+2; y<=rows; y++) {
+				double scaleFactor = matrix[y-1][i];
+				if (scaleFactor == 0) {
+					continue;
+				}
+				scaleAddRows(i+1, y, -scaleFactor);
+			}
+		}
+
 	}
-	
+
 	/**
-	 * Checks that an entry is a leading entry in its row
-	 * @param arr Array of entries
-	 * @param m Row
-	 * @param n Column
-	 * @return true if the entry at (m, n) is a leading entry
+	 * Find the row-column pair of the first pivot position of a submatrix(i, i)
+	 * @param i Row and column of submatrix
+	 * @return RowColumnPair object with row and column position of first pivot
 	 */
-	private boolean isLeading(double[][] arr, int m, int n) {
+	private RowColumnPair findPivotPos(int i) {
+		for (int x=i; x<columns; x++) {
+			for (int y=i; y<rows; y++) {
+				if (matrix[y][x] != 0) {
+					return new RowColumnPair(y+1, x+1);
+				}
+			}
+		}
+		System.err.println("ERR: Zero matrix.");
+		return null;
+	}
+
+
+	private boolean isLeadingInRow(double[][] arr, int m, int n) {
+		//All zero entries to the left
+		for (int j=n-1; j> 0; j--) {
+			if (arr[m][j] != 0) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	private boolean isLeadingInColumn(double[][] arr, int m, int n) {
 		int rows = arr.length;
 		//All zero entries underneath
 		for (int i=m+1; i<rows; i++) {
 			if (arr[i][n] != 0) {
-				return false;
-			}
-		}
-		//All zero entries to the left 
-		for (int j=n-1; j>= 0; j--) {
-			if (arr[m][j] != 0) {
 				return false;
 			}
 		}
@@ -342,7 +386,7 @@ public class Matrix {
 		}
 		return linearized;
 	}
-	
+
 	/**
 	 * Helper function for minoring a double[][] array
 	 * @param arr double[][] array
@@ -395,7 +439,7 @@ public class Matrix {
 		}
 		return prod;
 	}
-	
+
 	/**
 	 * Getter method for number of rows
 	 * @return number of rows in matrix
@@ -466,7 +510,7 @@ public class Matrix {
 			matrix[row-1][j] *= c;
 		}
 	}
-	
+
 	/**
 	 * Scale a column in the matrix by c
 	 * @param column Column to scale
@@ -481,7 +525,7 @@ public class Matrix {
 			matrix[i][column-1] *= c;
 		}
 	}
-	
+
 	/**
 	 * Set an entry val at mth row, nth column
 	 * @param m Index of row (starts at 1)
@@ -495,18 +539,41 @@ public class Matrix {
 		}
 		matrix[m-1][n-1] = val;
 	}
-	
+
 	/**
 	 * Swaps two rows of the matrix
 	 * @param m1 First row
 	 * @param m2 Second row
 	 */
-	public void swapRow(int m1, int m2) {
-		double[] t = matrix[m1];
-		matrix[m1] = matrix[m2];
-		matrix[m2] = t;
+	public void swapRows(int m1, int m2) {
+		if (m1 == m2) {
+			return;
+		}
+		double[] t = matrix[m1-1];
+		matrix[m1-1] = matrix[m2-1];
+		matrix[m2-1] = t;
 	}
-	
+
+	/**
+	 * Scales row m1 by c and add to row m2
+	 * @param m1 Row to scale and add
+	 * @param m2 Resulting row
+	 * @param c  Scaling constant
+	 */
+	public void scaleAddRows(int m1, int m2, double c) {
+		if (m1 == m2) {
+			System.err.println("ERR: Invalid Operation. Cannot scale-add.");
+			return;
+		} else if (m1 <= 0 || m2 <= 0) {
+			System.err.println("ERR: Invalid row dimension. Cannot scale-add.");
+			return;
+		}
+		for (int j=0; j<columns; j++) {
+			double adder = matrix[m1-1][j]*c;
+			matrix[m2-1][j] += adder;
+		}
+	}
+
 	/**
 	 * Print matrix to System.out
 	 */
@@ -521,5 +588,14 @@ public class Matrix {
 			}
 		}
 	}
-	
+
+	private class RowColumnPair {
+		private int row;
+		private int column;
+		public RowColumnPair(int m, int n) {
+			row = m;
+			column = n;
+		}
+	}
+
 }

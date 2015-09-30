@@ -1,5 +1,6 @@
 # matrix-computation-package
 Linear algebra package made by Java for Java. It includes elementary operations such as addition, multiplication as well as more advanced operations, from determinants, inverses, to solving matrix equations. A full list of supported methods and use can be found below. 
+Note: Row and column indexing starts at 1 for all public methods
 
 <hr>
 
@@ -27,12 +28,14 @@ Linear algebra package made by Java for Java. It includes elementary operations 
 &nbsp;&nbsp;Returns new Matrix that is result of scaling self Matrix by a constant c
 ######double trace()
 &nbsp;&nbsp;Returns the trace (sum of diagonal entries) of the Matrix
-######void swapRow(int m1, int m2)
+######void swapRows(int m1, int m2)
 &nbsp;&nbsp;Swap two rows m1 and m2
 ######void scaleRow(int m, double c)
 &nbsp;&nbsp;Scale row m by constant c
 ######void scaleColumn(int n, double c)
 &nbsp;&nbsp;Scale column n by constant c
+######void scaleAddRows(int m1, int m2, int c)
+&nbsp;&nbsp;Scale row m1 by c then add to row m2
 #### More Operations
 ######Matrix transpose()
 &nbsp;&nbsp;Returns new Matrix that is result of transposing self Matrix
@@ -44,6 +47,8 @@ Linear algebra package made by Java for Java. It includes elementary operations 
 &nbsp;&nbsp;Returns new Matrix that is the minor of self Matrix by removing mth row and nth column
 ######Matrix inverse()
 &nbsp;&nbsp;Returns new Matrix that is the inverse of self Matrix
+######void echelonForm()
+&nbsp;&nbsp;Reduces the Matrix into echelon form (this method is destructive)
 #### Miscellaneous
 ######Matrix random(int m, int n)
 &nbsp;&nbsp;Returns an mxn matrix with random entries

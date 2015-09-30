@@ -37,6 +37,9 @@ public class MatrixTest {
 		 * TOSTRING
 		 */
 		assertEquals(m.toString(), "[[ 1.0, 2.0, 3.0 ], [ 4.0, 5.0, 6.0 ], [ 7.0, 8.0, 9.0 ], [ 10.0, 11.0, 12.0 ] ]");
+	
+		
+		
 	}
 	
 	@Test
@@ -63,6 +66,24 @@ public class MatrixTest {
 		Matrix invertibleMatrix = new Matrix(invertibleArr);
 		double[][] inverse = {{-2, 8 ,-5}, {3, -11, 7}, {9, -34, 21}};
 		assertTrue(invertibleMatrix.inverse().equals(new Matrix(inverse)));
+	
+		/**
+		 * ECHELON FORM
+		 */
+		double[][] echelonRes1 = {{1,2,0}, {0,1,1.25}, {0,0,1}};
+		Matrix echelonMatrix1 = new Matrix(echelonRes1);
+		
+		double[][] testArr = {{1,2,0}, {0,4,5}, {3,2,6}};
+		Matrix testMatrix = new Matrix(testArr);
+		testMatrix.echelonForm();
+		
+		double[][] testArr2 = {{0,4,5}, {1,2,0}, {3,2,6}};
+		Matrix testMatrix2 = new Matrix(testArr2);
+		testMatrix2.echelonForm();
+		
+		assertTrue(testMatrix.equals(echelonMatrix1));
+		assertTrue(testMatrix2.equals(echelonMatrix1));
+		
 	}
 
 }
