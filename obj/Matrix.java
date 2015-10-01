@@ -2,6 +2,7 @@ package obj;
 
 
 import java.util.Arrays;
+import java.util.Stack;
 
 public class Matrix {
 
@@ -270,6 +271,9 @@ public class Matrix {
 		return res;
 	}
 
+	/**
+	 * Return the echelon form of the Matrix; this method is destructive
+	 */
 	public void echelonForm() {
 		int d; //diagonal boundary
 		if (rows > columns) {
@@ -302,6 +306,27 @@ public class Matrix {
 			}
 		}
 
+	}
+	
+	/**
+	 * Returns the reducedEchelonForm of this matrix; this method is destructive
+	 */
+	//Incomplete
+	public void reducedEchelonForm() {
+		echelonForm();
+		Stack<RowColumnPair> pivots = new Stack<RowColumnPair>();
+		int d;
+		if (rows > columns) {
+			d = columns;
+		} else {
+			d = rows;
+		}
+		for (int i=0; i<d; i++) {
+			RowColumnPair rcPair = findPivotPos(i);
+			pivots.push(rcPair);
+		}
+		//pop each pivot off the stack (last first)
+			//for each, turn column pos in all rows above 0
 	}
 
 	/**

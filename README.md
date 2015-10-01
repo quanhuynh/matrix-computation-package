@@ -49,6 +49,8 @@ Note: Row and column indexing starts at 1 for all public methods
 &nbsp;&nbsp;Returns new Matrix that is the inverse of self Matrix
 ######void echelonForm()
 &nbsp;&nbsp;Reduces the Matrix into echelon form (this method is destructive)
+######void reducedEchelonForm()
+&nbsp;&nbsp;Reduces the Matrix into row reduced echelon form (this method is destructive)
 #### Miscellaneous
 ######Matrix random(int m, int n)
 &nbsp;&nbsp;Returns an mxn matrix with random entries
