@@ -84,6 +84,8 @@ public class MatrixTest {
 		assertTrue(testMatrix.equals(echelonMatrix1));
 		assertTrue(testMatrix2.equals(echelonMatrix1));
 		
+		
+		
 	}
 
 }
