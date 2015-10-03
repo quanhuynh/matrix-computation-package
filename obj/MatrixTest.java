@@ -84,7 +84,10 @@ public class MatrixTest {
 		assertTrue(testMatrix.equals(echelonMatrix1));
 		assertTrue(testMatrix2.equals(echelonMatrix1));
 		
-		
+		double[][] identityArr = {{1,0,0}, {0,1,0}, {0,0,1}};
+		Matrix identityMatrix = new Matrix(identityArr);
+		testMatrix.reducedEchelonForm();
+		assertTrue(testMatrix.equals(identityMatrix));
 		
 	}
 

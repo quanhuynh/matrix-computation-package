@@ -2,6 +2,7 @@ package obj;
 
 
 import java.util.Arrays;
+import java.util.EmptyStackException;
 import java.util.Stack;
 
 public class Matrix {
@@ -311,8 +312,6 @@ public class Matrix {
 	/**
 	 * Returns the reducedEchelonForm of this matrix; this method is destructive
 	 */
-	//Incomplete
-	//Test
 	public void reducedEchelonForm() {
 		echelonForm();
 		Stack<RowColumnPair> pivots = new Stack<RowColumnPair>();
@@ -327,20 +326,26 @@ public class Matrix {
 			pivots.push(rcPair);
 		}
 		//pop each pivot off the stack (last first)
-			//for each, subtract 
-		while (pivots.peek() != null) {
+			//for each, subtract
+		try {
 			RowColumnPair curPair = pivots.pop();
-			int pivotM = curPair.row-1;
-			int pivotN = curPair.column-1;
-			for (int i=pivotM-1; i>0; i--) {
-				double scaleFactor = matrix[i][pivotN];
-				if (scaleFactor == 0) {
-					continue;
+			while (true) {
+				int pivotM = curPair.row;
+				int pivotN = curPair.column;
+				for (int i=pivotM-2; i>=0; i--) {
+					double scaleFactor = matrix[i][pivotN-1];
+					if (scaleFactor == 0) {
+						continue;
+					}
+					scaleAddRows(pivotM, i+1, -scaleFactor);
 				}
-				matrix[i][pivotN] = 0;
-				scaleAddRows(i+1, pivotM, -scaleFactor);
+				curPair = pivots.pop();
 			}
+		} catch (EmptyStackException e) {
+			
 		}
+		
+		
 	}
 
 	/**
