@@ -344,8 +344,6 @@ public class Matrix {
 		} catch (EmptyStackException e) {
 			
 		}
-		
-		
 	}
 
 	/**
