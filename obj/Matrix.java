@@ -292,14 +292,14 @@ public class Matrix {
 			}
 			
 			//Divide across row for leading entry to be one
-			double pivotEntry = matrix[i][i];
+			double pivotEntry = matrix[i][pivotRC.column-1];
 			for (int x=i; x<columns; x++) {
 				matrix[i][x] /= pivotEntry;
 			}
 			
 			//Create zeroes underneath pivot row
 			for (int y=i+2; y<=rows; y++) {
-				double scaleFactor = matrix[y-1][i];
+				double scaleFactor = matrix[y-1][pivotRC.column-1];
 				if (scaleFactor == 0) {
 					continue;
 				}

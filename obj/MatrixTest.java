@@ -95,6 +95,13 @@ public class MatrixTest {
 		Matrix goodMoreRowsMatrix = new Matrix(goodMoreRows);
 		moreRowsMatrix.reducedEchelonForm();
 		assertTrue(moreRowsMatrix.equals(goodMoreRowsMatrix));
+		
+		double[][] moreCols = {{2,4,8}, {1,2,9}};
+		Matrix moreColsMatrix = new Matrix(moreCols);
+		double[][] goodMoreCols = {{1,2,0}, {0,0,1}};
+		Matrix goodMoreColsMatrix = new Matrix(goodMoreCols);
+		moreColsMatrix.reducedEchelonForm();
+		assertTrue(moreColsMatrix.equals(goodMoreColsMatrix));
 	}
 
 }
