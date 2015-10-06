@@ -3,6 +3,8 @@ package obj;
 
 import java.util.Arrays;
 import java.util.EmptyStackException;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.Stack;
 
 public class Matrix {
@@ -344,6 +346,25 @@ public class Matrix {
 		} catch (EmptyStackException e) {
 			
 		}
+	}
+	
+	/**
+	 * Returns the number of pivot positions in this matrix
+	 * @return number of pivot positions
+	 */
+	public int pivots() {
+		int d;
+		Set<RowColumnPair> pivots = new HashSet<RowColumnPair>();
+		if (rows > columns) {
+			d = columns;
+		} else {
+			d = rows;
+		}
+		
+		for (int i=0; i<d; i++) {
+			pivots.add(findPivotPos(i));
+		}
+		return pivots.size();
 	}
 
 	/**

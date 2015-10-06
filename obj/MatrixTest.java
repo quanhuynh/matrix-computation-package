@@ -43,7 +43,7 @@ public class MatrixTest {
 	}
 	
 	@Test
-	public void intermediateOpsTest() {
+	public void moreOpsTest() {
 		
 		double[][] basicArray = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}, {10, 11, 12}};
 		Matrix m = new Matrix(basicArray);
@@ -102,6 +102,13 @@ public class MatrixTest {
 		Matrix goodMoreColsMatrix = new Matrix(goodMoreCols);
 		moreColsMatrix.reducedEchelonForm();
 		assertTrue(moreColsMatrix.equals(goodMoreColsMatrix));
+		
+		/**
+		 * PIVOT COUNT
+		 */
+		assertTrue(moreColsMatrix.pivots() == 2);
+		assertTrue(moreRowsMatrix.pivots() == 2);
+		assertTrue(testMatrix.pivots() == 3);
 	}
 
 }
