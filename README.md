@@ -2,6 +2,9 @@
 Linear algebra package made by Java for Java. It includes elementary operations such as addition, multiplication as well as more advanced operations, from determinants, inverses, to solving matrix equations. A full list of supported methods and use can be found below. 
 Note: Row and column indexing starts at 1 for all public methods
 
+To use the package, simply download and add to project as an external .jar file
+[Download here] (https://www.dropbox.com/s/h78or0zgbck82yg/Matrix.jar?dl=0)
+
 <hr>
 
 ### Documentation
