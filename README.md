@@ -5,7 +5,8 @@ Note: Row and column indexing starts at 1 for all public methods
 <hr>
 
 ### Documentation
-#### Constructors
+#### Supported Methods
+##### Constructors
 ######Matrix(double[][] array)
 &nbsp;&nbsp;Build a Matrix object from a double[][] array
 ######Matrix(double[] array)
@@ -21,7 +22,7 @@ Note: Row and column indexing starts at 1 for all public methods
 &nbsp;&nbsp;Returns true if Matrix represents an invertible matrix
 ######boolean equals(Object obj)
 &nbsp;&nbsp;Returns true if Matrix is equal to another Matrix object
-#### Elementary Operations
+##### Elementary Operations
 ######Matrix add(Matrix m)
 &nbsp;&nbsp;Returns new Matrix that is result of adding self Matrix to specified Matrix m
 ######Matrix multiply(double c)
@@ -36,7 +37,7 @@ Note: Row and column indexing starts at 1 for all public methods
 &nbsp;&nbsp;Scale column n by constant c
 ######void scaleAddRows(int m1, int m2, int c)
 &nbsp;&nbsp;Scale row m1 by c then add to row m2
-#### More Operations
+##### More Operations
 ######Matrix transpose()
 &nbsp;&nbsp;Returns new Matrix that is result of transposing self Matrix
 ######Matrix multiply(Matrix m)
@@ -51,7 +52,7 @@ Note: Row and column indexing starts at 1 for all public methods
 &nbsp;&nbsp;Reduces the Matrix into echelon form (this method is destructive)
 ######void reducedEchelonForm()
 &nbsp;&nbsp;Reduces the Matrix into row reduced echelon form (this method is destructive)
-#### Miscellaneous
+##### Miscellaneous
 ######Matrix random(int m, int n)
 &nbsp;&nbsp;Returns an mxn matrix with random entries
 ######Matrix clone()
